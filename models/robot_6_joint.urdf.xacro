@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="robot">
 
-
+<xacro:include filename="materials.xacro" />
 
     <!-- base link-->
     <link name="base_link">
@@ -12,11 +12,40 @@
 
     <xacro:include filename="robot_base_square.xacro" />
   
-    
+    <!-- base to chasiis-->
     <joint name="base_link_joint" type="fixed">
         <parent link="base_link"/>
         <child link="main_base_square"/>
         <origin xyz="-0.21 0 0"/>
+    </joint>
+
+    <xacro:include filename="robot_legs.xacro" />
+
+    <!-- base to leg 1-->
+    <joint name="base_leg1_joint" type="revolute">
+        <parent link="main_base_square"/>
+        <child link="leg1_1"/>
+        <origin xyz="0.46 0 0" rpy="-${pi/2} 0 0"/>
+        <limit lower="0" upper="3.14" effort="10" velocity="3"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+        <!-- base to leg 2-->
+    <joint name="base_leg2_joint" type="revolute">
+        <parent link="main_base_square"/>
+        <child link="leg2_1"/>
+        <origin xyz="0 0.225 0" rpy="-${pi/2} 0 0"/>
+        <limit lower="0" upper="3.14" effort="10" velocity="3"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+        <!-- base to leg 3-->
+    <joint name="base_leg3_joint" type="revolute">
+        <parent link="main_base_square"/>
+        <child link="leg3_1"/>
+        <origin xyz="0 -0.225 0" rpy="${pi/2} 0 0"/>
+        <limit lower="0" upper="3.14" effort="10" velocity="3"/>
+        <axis xyz="0 0 -1"/>
     </joint>
 
 </robot>

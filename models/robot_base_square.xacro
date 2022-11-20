@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
 
-<xacro:include filename="materials.xacro" />
+
   
 <link name="main_base_square">
     <visual>

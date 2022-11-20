@@ -1,0 +1,52 @@
+
+
+<!-- leg 2-->
+<link name="leg2_1">
+    <visual>
+        <origin xyz="0.15 0 0"/>
+        <geometry>
+            <box size="0.3 0.08 0.05"/>
+        </geometry> 
+        <material name="orange"/>
+    </visual>
+</link>
+
+
+
+<link name="leg2_2">
+    <visual>
+        <origin xyz="0.25 0 0"/>
+        <geometry>
+            <box size="0.5 0.08 0.05"/>
+        </geometry> 
+        <material name="yellow"/>
+    </visual>
+</link>
+
+
+
+
+
+<!-- leg 3-->
+
+<link name="leg3_1">
+    <visual>
+        <origin xyz="0.15 0 0"/>
+        <geometry>
+            <box size="0.3 0.08 0.05"/>
+        </geometry> 
+        <material name="orange"/>
+    </visual>
+</link>
+
+
+
+<link name="leg3_2">
+    <visual>
+        <origin xyz="0.25 0 0"/>
+        <geometry>
+            <box size="0.5 0.08 0.05"/>
+        </geometry> 
+        <material name="yellow"/>
+    </visual>
+</link>

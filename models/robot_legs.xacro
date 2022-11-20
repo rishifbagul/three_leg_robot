@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+
+
+
+<!-- leg 1-->  
+<link name="leg1_1">
+    <visual>
+        <origin xyz="0.15 0 0"/>
+        <geometry>
+            <box size="0.3 0.08 0.05"/>
+        </geometry> 
+        <material name="orange"/>
+    </visual>
+</link>
+
+<joint name="leg1_joint" type="revolute">
+    <parent link="leg1_1"/>
+    <child link="leg1_2"/>
+    <origin xyz="0.3 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="100" velocity="3"/>
+    <axis xyz="0 0 1"/>
+</joint>
+
+
+<link name="leg1_2">
+    <visual>
+        <origin xyz="0.25 0 0"/>
+        <geometry>
+            <box size="0.5 0.08 0.05"/>
+        </geometry> 
+        <material name="yellow"/>
+    </visual>
+</link>
+
+
+<!-- leg 2-->  
+<link name="leg2_1">
+    <visual>
+        <origin xyz="0.15 0 0"/>
+        <geometry>
+            <box size="0.3 0.08 0.05"/>
+        </geometry> 
+        <material name="orange"/>
+    </visual>
+</link>
+
+<joint name="leg2_joint" type="revolute">
+    <parent link="leg2_1"/>
+    <child link="leg2_2"/>
+    <origin xyz="0.3 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="100" velocity="3"/>
+    <axis xyz="0 0 1"/>
+</joint>
+
+
+<link name="leg2_2">
+    <visual>
+        <origin xyz="0.25 0 0"/>
+        <geometry>
+            <box size="0.5 0.08 0.05"/>
+        </geometry> 
+        <material name="yellow"/>
+    </visual>
+</link>
+
+
+<!-- leg 3-->  
+<link name="leg3_1">
+    <visual>
+        <origin xyz="0.15 0 0"/>
+        <geometry>
+            <box size="0.3 0.08 0.05"/>
+        </geometry> 
+        <material name="orange"/>
+    </visual>
+</link>
+
+<joint name="leg3_joint" type="revolute">
+    <parent link="leg3_1"/>
+    <child link="leg3_2"/>
+    <origin xyz="0.3 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="100" velocity="3"/>
+    <axis xyz="0 0 1"/>
+</joint>
+
+
+<link name="leg3_2">
+    <visual>
+        <origin xyz="0.25 0 0"/>
+        <geometry>
+            <box size="0.5 0.08 0.05"/>
+        </geometry> 
+        <material name="yellow"/>
+    </visual>
+</link>
+
+
+
+
+    
+</robot>
