@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="robot">
 
 <xacro:include filename="materials.xacro" />
-
+<xacro:include filename="inertial_macros.xacro" />
     <!-- base link-->
     <link name="base_link">
 
@@ -20,6 +20,7 @@
     </joint>
 
     <xacro:include filename="robot_legs.xacro" />
+    
 
     <!-- base to leg 1-->
     <joint name="base_leg1_joint" type="revolute">
