@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<!-- transmission 1-->
+<transmission name="base_leg1_joint_trans">
+    <type> transmission_interface/SimpleTransmission</type>
+    <joint name="base_leg1_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_leg1_joint_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+<!-- transmission 2-->
+<transmission name="base_leg2_joint_trans">
+    <type> transmission_interface/SimpleTransmission</type>
+    <joint name="base_leg2_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_leg2_joint_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+
+<!-- transmission 3-->
+<transmission name="base_leg3_joint_trans">
+    <type> transmission_interface/SimpleTransmission</type>
+    <joint name="base_leg3_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_leg3_joint_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+
+<!-- transmission 4-->
+<transmission name="leg1_joint_trans">
+    <type> transmission_interface/SimpleTransmission</type>
+    <joint name="leg1_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="leg1_joint_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+
+<!-- transmission 5-->
+<transmission name="leg2_joint_trans">
+    <type> transmission_interface/SimpleTransmission</type>
+    <joint name="leg2_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="leg2_joint_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+
+<!-- transmission 6-->
+<transmission name="leg3_joint_trans">
+    <type> transmission_interface/SimpleTransmission</type>
+    <joint name="leg3_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="leg3_joint_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+<!-- adding controler from gazebo-->
+
+<gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/robot_6_joint</robotNamespace>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+</gazebo>    
+
+</robot>

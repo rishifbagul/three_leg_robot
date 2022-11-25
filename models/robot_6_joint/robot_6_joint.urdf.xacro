@@ -49,4 +49,11 @@
         <axis xyz="0 0 -1"/>
     </joint>
 
+
+
+        <!-- adding transmission file here-->
+
+    <xacro:include filename="robot_transmission.xacro" />
+    
+
 </robot>
