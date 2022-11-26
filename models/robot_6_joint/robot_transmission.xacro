@@ -47,7 +47,7 @@
     </joint>
     <actuator name="leg1_joint_motor">
         <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
+        <mechanicalReduction>100</mechanicalReduction>
     </actuator>
 </transmission>
 
@@ -60,7 +60,7 @@
     </joint>
     <actuator name="leg2_joint_motor">
         <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
+        <mechanicalReduction>100</mechanicalReduction>
     </actuator>
 </transmission>
 
@@ -73,7 +73,7 @@
     </joint>
     <actuator name="leg3_joint_motor">
         <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
+        <mechanicalReduction>100</mechanicalReduction>
     </actuator>
 </transmission>
 
@@ -83,6 +83,8 @@
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
         <robotNamespace>/robot_6_joint</robotNamespace>
         <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        <updateRate>60.0</updateRate>
+        <alwaysOn>true</alwaysOn>
     </plugin>
 </gazebo>    
 
