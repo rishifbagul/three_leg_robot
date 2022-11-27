@@ -7,17 +7,19 @@
   <rosparam file="$(find three_leg_robot)/models/robot_6_joint/motors_config.yaml"/>
 
 
-   <include file="$(find gazebo_ros)/launch/empty_world.launch"> 
+   <include file="$(find gazebo_ros)/launch/empty_world.launch" > 
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="true"/>
     <arg name="debug" value="false"/>
+
+    
         <!--<arg name="world_name" value="$(arg world_file)"/>-->
   </include>
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_state_controller  joint1_position_controller  joint2_position_controller  joint3_position_controller joint4_position_controller joint5_position_controller joint6_position_controller " ns="/robot_6_joint"/>
 
 
-  <node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model my_bot -x 0 -y 0 -z 0 -J base_leg1_joint 1.0 -J base_leg2_joint 1.0 -J base_leg3_joint 1.0 -J leg1_joint 1.0 -J leg2_joint 1.0 -J leg3_joint -1.0"/>
+  <node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model three_leg_robot -x 0 -y 0 -z 4 "/>
 
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
