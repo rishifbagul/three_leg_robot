@@ -24,19 +24,7 @@ class Gazebo_enviorment:
         self.model_state_req = SetModelStateRequest()
         self.model_state_req.model_state = ModelState()
         self.model_state_req.model_state.model_name = 'three_leg_robot'
-        self.model_state_req.model_state.pose.position.x = 0.0
-        self.model_state_req.model_state.pose.position.y = 0.0
-        self.model_state_req.model_state.pose.position.z = 1
-        self.model_state_req.model_state.pose.orientation.x = 0.0
-        self.model_state_req.model_state.pose.orientation.y = 0.0
-        self.model_state_req.model_state.pose.orientation.z = 0.0
-        self.model_state_req.model_state.pose.orientation.w = 0.0
-        self.model_state_req.model_state.twist.linear.x = 0.0
-        self.model_state_req.model_state.twist.linear.y = 0.0
-        self.model_state_req.model_state.twist.linear.z = 0.0
-        self.model_state_req.model_state.twist.angular.x = 0.0
-        self.model_state_req.model_state.twist.angular.y = 0.0
-        self.model_state_req.model_state.twist.angular.z = 0.0
+        self.model_state_req.model_state.pose.position.z = 0.8
         self.model_state_req.model_state.reference_frame = 'world'
 
         self.joint_publisher=[rospy.Publisher('/robot_6_joint/joint1_position_controller/command',Float64,queue_size=2),\
@@ -51,14 +39,14 @@ class Gazebo_enviorment:
         self.starting_pos = np.array([1.0 , 1.0, 1.0,
                                      1.0, 1.0, 1.0])
         
-        self.model_config_proxy = rospy.ServiceProxy('/gazebo/set_model_configuration',SetModelConfiguration)
-        self.model_config_req = SetModelConfigurationRequest()
-        self.model_config_req.model_name = 'three_leg_robot'
-        self.model_config_req.urdf_param_name = 'robot_description'
-        self.model_config_req.joint_names = self.joint_name_list
-        self.model_config_req.joint_positions = self.starting_pos
+
         
     def reset_robot(self):
+        
+        self.move_joints([1,1,1,1,1,1])
+        time.sleep(1)
+        self.move_joints([1,1,1,1,1,1])
+        time.sleep(2)
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
             self.pause_engine()
@@ -70,23 +58,13 @@ class Gazebo_enviorment:
             self.model_state_proxy(self.model_state_req)
         except:
             print('/gazebo/set_model_state call failed')
-        
-        self.move_joints(self.starting_pos)
 
-        rospy.wait_for_service('/gazebo/set_model_configuration')
-        try:
-            self.model_config_proxy(self.model_config_req)
-        except :
-            print('/gazebo/set_model_configuration call failed')
-
-            
         rospy.wait_for_service('/gazebo/unpause_physics')
         try:
             self.unpause_engine()
         except :
             print("physics couldnt started")
-        self.move_joints(self.starting_pos)
-        time.sleep(2)
+        
         
     def move_joints(self,list_of_joint_angles):
         for i in range(len(list_of_joint_angles)):
@@ -96,6 +74,9 @@ class Gazebo_enviorment:
 
 env=Gazebo_enviorment()
 env.reset_robot()
+time.sleep(5)
+env.move_joints([0,0,0,0,0,0])
+
 # for i in range(-150,150,10):
 #     env.move_joints([i/100,i/100,i/100,i/100,i/100,i/100])
 #     print(i)
