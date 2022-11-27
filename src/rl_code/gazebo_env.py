@@ -1,6 +1,7 @@
 import rospy
 import time
 import actionlib
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryActionGoal, FollowJointTrajectoryGoal
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from std_msgs.msg import Float64
@@ -12,6 +13,7 @@ from gazebo_msgs.msg import ModelState
 from sensor_msgs.msg import Imu
 import random
 import numpy as np
+import math
 
 
 class Gazebo_enviorment:
@@ -27,25 +29,36 @@ class Gazebo_enviorment:
         self.model_state_req.model_state.pose.position.z = 0.8
         self.model_state_req.model_state.reference_frame = 'world'
 
-        self.joint_publisher=[rospy.Publisher('/robot_6_joint/joint1_position_controller/command',Float64,queue_size=2),\
-                        rospy.Publisher('/robot_6_joint/joint2_position_controller/command',Float64,queue_size=2),\
-                        rospy.Publisher('/robot_6_joint/joint3_position_controller/command',Float64,queue_size=2),\
-                        rospy.Publisher('/robot_6_joint/joint4_position_controller/command',Float64,queue_size=2),\
-                        rospy.Publisher('/robot_6_joint/joint5_position_controller/command',Float64,queue_size=2),\
-                        rospy.Publisher('/robot_6_joint/joint6_position_controller/command',Float64,queue_size=2)]
+        self.joint_publisher=[rospy.Publisher('/robot_6_joint/joint1_position_controller/command',Float64,queue_size=1),\
+                        rospy.Publisher('/robot_6_joint/joint2_position_controller/command',Float64,queue_size=1),\
+                        rospy.Publisher('/robot_6_joint/joint3_position_controller/command',Float64,queue_size=1),\
+                        rospy.Publisher('/robot_6_joint/joint4_position_controller/command',Float64,queue_size=1),\
+                        rospy.Publisher('/robot_6_joint/joint5_position_controller/command',Float64,queue_size=1),\
+                        rospy.Publisher('/robot_6_joint/joint6_position_controller/command',Float64,queue_size=1)]
 
         self.joint_name_list = ['base_leg1_joint','base_leg2_joint','base_leg3_joint','leg1_joint','leg2_joint','leg3_joint']
         
         self.starting_pos = np.array([1.0 , 1.0, 1.0,
                                      1.0, 1.0, 1.0])
-        
+        self.get_model_state_proxy = rospy.ServiceProxy('/gazebo/get_model_state',GetModelState)
+        self.get_model_state_req = GetModelStateRequest()
+        self.get_model_state_req.model_name = 'three_leg_robot'
+        self.get_model_state_req.relative_entity_name = 'world'
 
+        self.state_joint_angle=np.array([0,0,0,0,0,0])
+        self.next_state_joint_angle=np.array([0,0,0,0,0,0])
+
+        self.joint_max_angle=np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
+        self.joint_min_angle=np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
+        
+        self.target_x=5
+        self.target_y=0
         
     def reset_robot(self):
         
-        self.move_joints([1,1,1,1,1,1])
+        self.move_joints(self.starting_pos)
         time.sleep(1)
-        self.move_joints([1,1,1,1,1,1])
+        self.move_joints(self.starting_pos)
         time.sleep(2)
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
@@ -69,19 +82,85 @@ class Gazebo_enviorment:
     def move_joints(self,list_of_joint_angles):
         for i in range(len(list_of_joint_angles)):
             self.joint_publisher[i].publish(list_of_joint_angles[i])
+        self.next_state_joint_angle=list_of_joint_angles
     
+    def get_state(self):
+        state=self.get_state_joint_angle()
+        for i in range(len(state)):
+            state[i]=self.remap(state[i],self.joint_min_angle[i],self.joint_max_angle[i],0,1)
+        model_state=self.get_model_state()
+        x,y,z,w,yaw=self.get_state_pose(model_state)
+        yaw=self.remap(yaw,-math.pi,math.pi,0,1)
+        pose=np.array([x,y,z,w,yaw])
+        return np.concatenate((state,pose))
+
+    
+    def get_state_joint_angle(self):
+        self.state_joint_angle=self.next_state_joint_angle
+        return self.state_joint_angle
+    
+    def get_model_state(self):
+        rospy.wait_for_service('/gazebo/get_model_state')
+        model_state = self.get_model_state_proxy(self.get_model_state_req)
+        return model_state
+    
+    def get_state_pose(self,model_state):
+        x=model_state.pose.orientation.x
+        y=model_state.pose.orientation.y
+        z=model_state.pose.orientation.z
+        w=model_state.pose.orientation.w
+        ro,pi,yaw=euler_from_quaternion([x,y,z,w])
+        return x,y,z,w,yaw
+
+
+    def remap(self,value,low_from,high_from,low_to,high_to):
+        if value>high_from:
+            value=high_from
+        elif value<low_from:
+            value=low_from
+        return (value-low_from)*((high_to-low_to)/(high_from-low_from))+low_to
+    
+    def reward(self,model_state):                       #make changes when ever target is changed
+        x=model_state.pose.orientation.x
+        y=model_state.pose.orientation.y
+        z=model_state.pose.orientation.z
+        w=model_state.pose.orientation.w
+        X=model_state.pose.position.x
+        Y=model_state.pose.position.y
+
+        roll,pitch,yaw=euler_from_quaternion([x,y,z,w])
+        if roll > 2 or roll < -2 or pitch > 2 or pitch < -2:
+            done=True
+            reward=-2000
+        else:
+            done=False
+        
+        if X > self.target_x and ( Y>self.target_y-0.2 and Y<self.target_y+0.2):
+            done=True
+            reward=100
+        
+        if not done:
+            reward=-1*abs((self.target_x-X)+(self.target_y-Y))
+        
+        return reward,done
+    
+            
+        
+        
+
+
+
 
 
 env=Gazebo_enviorment()
-env.reset_robot()
-time.sleep(5)
-env.move_joints([0,0,0,0,0,0])
+state=env.get_model_state()
+print(env.reward(state))
+#env.reset_robot()
+#print(env.get_state())
+# time.sleep(5)
+#env.move_joints([0,0,0,0,0,0])
+#time.sleep(2)
+#print(env.get_state())
+#print(env.get_state_pose())
 
-# for i in range(-150,150,10):
-#     env.move_joints([i/100,i/100,i/100,i/100,i/100,i/100])
-#     print(i)
-#     time.sleep(0.2)
-# for i in range(150,-150,-10):
-#     env.move_joints([i/100,i/100,i/100,i/100,i/100,i/100])
-#     print(i)
-#     time.sleep(0.2)
+
