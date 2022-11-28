@@ -38,7 +38,7 @@ class Gazebo_enviorment:
 
         self.joint_name_list = ['base_leg1_joint','base_leg2_joint','base_leg3_joint','leg1_joint','leg2_joint','leg3_joint']
         
-        self.starting_pos = np.array([3.0 , 3.0, 3.0, 1.5, 1.5, 1.5])
+        self.starting_pos = [3.0 , 3.0, 3.0, 1.5, 1.5, 1.5]
         self.get_model_state_proxy = rospy.ServiceProxy('/gazebo/get_model_state',GetModelState)
         self.get_model_state_req = GetModelStateRequest()
         self.get_model_state_req.model_name = 'three_leg_robot'
@@ -47,8 +47,8 @@ class Gazebo_enviorment:
         self.state_joint_angle=self.starting_pos
         self.next_state_joint_angle=self.starting_pos
 
-        self.joint_max_angle=np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
-        self.joint_min_angle=np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
+        self.joint_max_angle=[math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2]
+        self.joint_min_angle=[0,0,0,-math.pi/2,-math.pi/2,-math.pi/2]
         
         self.target_x=20
         self.target_y=0
@@ -59,8 +59,8 @@ class Gazebo_enviorment:
     def reset_robot(self):
         
         print("resting Enviorment")
-        self.move_joints([self.starting_pos])
-        time.sleep(1)
+        # self.move_joints(self.starting_pos)
+        # time.sleep(1)
         self.move_joints(self.starting_pos)
         time.sleep(2)
         rospy.wait_for_service('/gazebo/pause_physics')
@@ -170,12 +170,14 @@ class Gazebo_enviorment:
 
 
 
-env = Gazebo_enviorment()
-env.reset_robot()
+# env = Gazebo_enviorment()
+# env.reset_robot()
 
-for i in range(10):
-    time.sleep(2)
-    env.move_joints(env.starting_pos)
+# for i in range(10):
+#     time.sleep(2)
+#     action=np.array([0.0,0.0,0.0,0.0,0.0,0.0])
+#     print(env.perform_one_step(action))
+
 # pos = np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
 # env.move_joints(pos)
 
