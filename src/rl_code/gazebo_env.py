@@ -146,7 +146,9 @@ class Gazebo_enviorment:
             reward=100
         
         if not done:
-            reward=abs((self.target_x-self.reward_last_x)+(self.target_y-self.reward_last_y))-abs((self.target_x-X)+(self.target_y-Y))
+            reward=10*(abs((self.target_x-self.reward_last_x)+(self.target_y-self.reward_last_y))-abs((self.target_x-X)+(self.target_y-Y)))
+            if reward <= 0:
+                reward=min(reward,-1)
             self.reward_last_x=X
             self.reward_last_y=Y
         
