@@ -61,7 +61,7 @@ class Gazebo_enviorment:
         print("resting Enviorment")
         # self.move_joints(self.starting_pos)
         # time.sleep(1)
-        self.move_joints(self.starting_pos)
+        self.move_joints([1,1,1,1,1,1])
         time.sleep(2)
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
@@ -156,7 +156,7 @@ class Gazebo_enviorment:
         for i in range(len(action)):
             action[i]=self.remap(action[i],-1,1,self.joint_min_angle[i],self.joint_max_angle[i])
         self.move_joints(action)
-        time.sleep(1)
+        time.sleep(0.5)
         model_state=self.get_model_state()
         next_state=self.get_state(model_state)
         raward,done = self.calculate_reward(model_state)

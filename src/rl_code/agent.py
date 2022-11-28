@@ -26,7 +26,7 @@ class DDPGAgent:
 
         if os.path.exists("NN_model/actor/saved_model.pb") :
           print("-----model Loading --------------------")
-           self.load()
+          self.load()
         else:
           # Main networks
           self.actor = NN.actor_NN((self.state_size),(self.action_size),actor_layer,self.action_max)
@@ -52,8 +52,9 @@ class DDPGAgent:
         
     def get_action(self, s, noise_scale):                   #visit again here
         a =  self.actor.predict(s.reshape(1,-1))[0]
-        print("action=",a)
+        print("pridicted action=",a)
         a += noise_scale * np.random.randn(self.action_size)
+        print("actual action=",a)
         return np.clip(a, -self.action_max, self.action_max)
 
     def update(self, batch_size):                           #learn about this
