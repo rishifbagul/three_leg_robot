@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Dense, concatenate
+from tensorflow.keras.layers import Input, Dense, concatenate 
+
 
 def critic_NN(state_size, action_size,hidden_layers):
 

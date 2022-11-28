@@ -7,7 +7,7 @@ class BasicBuffer:
     
     def __init__(self, size, state_dim, action_dim):
         self.file_name="memory.pickle"
-        self.save_counter_max=100
+        self.save_counter_max=50
         if os.path.exists(self.file_name) :
             self.load_buffer()
         else:
@@ -32,7 +32,7 @@ class BasicBuffer:
         if self.save_counter>self.save_counter_max:
             self.save_buffer()
             self.load_buffer()
-            self.counter=0
+            self.save_counter=0
 
     def sample(self, batch_size=32):
         idxs = np.random.randint(0, self.size, size=batch_size)

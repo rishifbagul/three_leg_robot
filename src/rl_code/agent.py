@@ -7,6 +7,8 @@ from collections import deque
 from sys import exit
 import memory_buffer
 import random
+from tensorflow import keras
+import os
 
 class DDPGAgent:
     
@@ -22,20 +24,23 @@ class DDPGAgent:
         actor_layer = [700,400,128]
         critic_layer = [700,512,300,1]
 
+        if os.path.exists("NN_model/actor/saved_model.pb") :
+          print("-----model Loading --------------------")
+           self.load()
+        else:
+          # Main networks
+          self.actor = NN.actor_NN((self.state_size),(self.action_size),actor_layer,self.action_max)
+          self.critic =NN.critic_NN((self.state_size),(self.action_size),critic_layer)
 
-        # Main networks
-        self.actor = NN.actor_NN((self.state_size),(self.action_size),actor_layer,self.action_max)
-        self.critic =NN.critic_NN((self.state_size),(self.action_size),critic_layer)
+          # Target networks
+          self.actor_target = NN.actor_NN((self.state_size),(self.action_size),actor_layer,self.action_max)
+          self.critic_target =NN.critic_NN((self.state_size),(self.action_size),critic_layer)
 
-        # Target networks
-        self.actor_target = NN.actor_NN((self.state_size),(self.action_size),actor_layer,self.action_max)
-        self.critic_target =NN.critic_NN((self.state_size),(self.action_size),critic_layer)
-
-        # Copying weights in,
-        self.actor_target.set_weights(self.actor.get_weights())
-        self.critic_target.set_weights(self.critic.get_weights())
-    
-        # optimizers
+          # Copying weights in,
+          self.actor_target.set_weights(self.actor.get_weights())
+          self.critic_target.set_weights(self.critic.get_weights())
+      
+          # optimizers
         self.actor_optimizer = tf.keras.optimizers.Adam(learning_rate=critic_learning_rate)
         self.critic_optimizer = tf.keras.optimizers.Adam(learning_rate=actor_learning_rate)
   
@@ -47,12 +52,13 @@ class DDPGAgent:
         
     def get_action(self, s, noise_scale):                   #visit again here
         a =  self.actor.predict(s.reshape(1,-1))[0]
+        print("action=",a)
         a += noise_scale * np.random.randn(self.action_size)
         return np.clip(a, -self.action_max, self.action_max)
 
     def update(self, batch_size):                           #learn about this
         
-        
+        print("..learning...")
         X,A,R,X2,D = self.replay_buffer.sample(batch_size)
         X = np.asarray(X,dtype=np.float32)
         A = np.asarray(A,dtype=np.float32)
@@ -71,7 +77,7 @@ class DDPGAgent:
           q_loss = tf.reduce_mean((qvals - q_target)**2)
           grads_q = tape.gradient(q_loss,self.critic.trainable_variables)
         self.critic_optimizer.apply_gradients(zip(grads_q, self.critic.trainable_variables))
-        self.q_losses.append(q_loss)
+        self.critic_losses.append(q_loss)
 
 
         #Updating ZE Actor
@@ -100,4 +106,18 @@ class DDPGAgent:
         temp2 = np.array(self.actor.get_weights())
         temp3 = self.tau*temp2 + (1-self.tau)*temp1
         self.actor_target.set_weights(temp3)
-        
+    
+    def save(self):
+      self.actor.save("NN_model/actor")
+      self.critic.save("NN_model/critic")
+      self.actor_target.save("NN_model/actor_target")
+      self.critic_target.save("NN_model/critic_target")
+      print("NN model saved")
+    
+    def load(self):
+      self.actor=keras.models.load_model("NN_model/actor")
+      self.critic=keras.models.load_model("NN_model/critic")
+      self.actor_target=keras.models.load_model("NN_model/actor_target")
+      self.critic_target=keras.models.load_model("NN_model/critic_target")
+      print("NN model loaded")
+       

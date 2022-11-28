@@ -38,25 +38,28 @@ class Gazebo_enviorment:
 
         self.joint_name_list = ['base_leg1_joint','base_leg2_joint','base_leg3_joint','leg1_joint','leg2_joint','leg3_joint']
         
-        self.starting_pos = np.array([1.0 , 1.0, 1.0,
-                                     1.0, 1.0, 1.0])
+        self.starting_pos = np.array([3.0 , 3.0, 3.0, 1.5, 1.5, 1.5])
         self.get_model_state_proxy = rospy.ServiceProxy('/gazebo/get_model_state',GetModelState)
         self.get_model_state_req = GetModelStateRequest()
         self.get_model_state_req.model_name = 'three_leg_robot'
         self.get_model_state_req.relative_entity_name = 'world'
 
-        self.state_joint_angle=np.array([0,0,0,0,0,0])
-        self.next_state_joint_angle=np.array([0,0,0,0,0,0])
+        self.state_joint_angle=self.starting_pos
+        self.next_state_joint_angle=self.starting_pos
 
         self.joint_max_angle=np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
         self.joint_min_angle=np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
         
-        self.target_x=5
+        self.target_x=20
         self.target_y=0
+        self.last_reward_x=0
+        self.last_reward_y=0
+        self.reset_robot()
         
     def reset_robot(self):
         
-        self.move_joints(self.starting_pos)
+        print("resting Enviorment")
+        self.move_joints([self.starting_pos])
         time.sleep(1)
         self.move_joints(self.starting_pos)
         time.sleep(2)
@@ -78,17 +81,20 @@ class Gazebo_enviorment:
         except :
             print("physics couldnt started")
         
+        model_state= self.get_model_state()
+        self.reward_last_x=model_state.pose.position.x
+        self.reward_last_y=model_state.pose.position.y
+        return self.get_state(model_state)
         
     def move_joints(self,list_of_joint_angles):
         for i in range(len(list_of_joint_angles)):
             self.joint_publisher[i].publish(list_of_joint_angles[i])
         self.next_state_joint_angle=list_of_joint_angles
     
-    def get_state(self):
+    def get_state(self,model_state):
         state=self.get_state_joint_angle()
         for i in range(len(state)):
             state[i]=self.remap(state[i],self.joint_min_angle[i],self.joint_max_angle[i],0,1)
-        model_state=self.get_model_state()
         x,y,z,w,yaw=self.get_state_pose(model_state)
         yaw=self.remap(yaw,-math.pi,math.pi,0,1)
         pose=np.array([x,y,z,w,yaw])
@@ -120,7 +126,7 @@ class Gazebo_enviorment:
             value=low_from
         return (value-low_from)*((high_to-low_to)/(high_from-low_from))+low_to
     
-    def reward(self,model_state):                       #make changes when ever target is changed
+    def calculate_reward(self,model_state):                       #make changes when ever target is changed
         x=model_state.pose.orientation.x
         y=model_state.pose.orientation.y
         z=model_state.pose.orientation.z
@@ -140,9 +146,22 @@ class Gazebo_enviorment:
             reward=100
         
         if not done:
-            reward=-1*abs((self.target_x-X)+(self.target_y-Y))
+            reward=abs((self.target_x-self.reward_last_x)+(self.target_y-self.reward_last_y))-abs((self.target_x-X)+(self.target_y-Y))
+            self.reward_last_x=X
+            self.reward_last_y=Y
         
         return reward,done
+    
+    def perform_one_step(self,action):
+        for i in range(len(action)):
+            action[i]=self.remap(action[i],-1,1,self.joint_min_angle[i],self.joint_max_angle[i])
+        self.move_joints(action)
+        time.sleep(1)
+        model_state=self.get_model_state()
+        next_state=self.get_state(model_state)
+        raward,done = self.calculate_reward(model_state)
+        return next_state,raward,done
+    
     
             
         
@@ -151,16 +170,26 @@ class Gazebo_enviorment:
 
 
 
+env = Gazebo_enviorment()
+env.reset_robot()
 
-env=Gazebo_enviorment()
-state=env.get_model_state()
-print(env.reward(state))
-#env.reset_robot()
-#print(env.get_state())
-# time.sleep(5)
-#env.move_joints([0,0,0,0,0,0])
-#time.sleep(2)
-#print(env.get_state())
-#print(env.get_state_pose())
+for i in range(10):
+    time.sleep(2)
+    env.move_joints(env.starting_pos)
+# pos = np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
+# env.move_joints(pos)
 
+# time.sleep(2)
 
+# pos = np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
+# env.move_joints(pos)
+
+# time.sleep(2)
+
+# pos = np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
+# env.move_joints(pos)
+
+# time.sleep(2)
+
+# pos = np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
+# env.move_joints(pos)
