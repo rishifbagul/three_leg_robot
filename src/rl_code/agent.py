@@ -54,12 +54,11 @@ class DDPGAgent:
         a =  self.actor.predict(s.reshape(1,-1))[0]
         print("pridicted action=",a)
         a += noise_scale * np.random.randn(self.action_size)
-        print("actual action=",a)
         return np.clip(a, -self.action_max, self.action_max)
 
     def update(self, batch_size):                           #learn about this
         
-        print("..learning...")
+        #print("..learning...")
         X,A,R,X2,D = self.replay_buffer.sample(batch_size)
         X = np.asarray(X,dtype=np.float32)
         A = np.asarray(A,dtype=np.float32)
@@ -96,8 +95,8 @@ class DDPGAgent:
               ## Updating both netwokrs
         # # updating q_mu network
         
-        temp1 = np.array(self.critic_target.get_weights())
-        temp2 = np.array(self.critic.get_weights())
+        temp1 = np.array(self.critic_target.get_weights(),dtype=object)
+        temp2 = np.array(self.critic.get_weights(),dtype=object)
         temp3 = self.tau*temp2 + (1-self.tau)*temp1
         self.critic_target.set_weights(temp3)
       

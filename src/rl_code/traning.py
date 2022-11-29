@@ -2,7 +2,7 @@
 from agent import DDPGAgent
 import numpy as np
 import gazebo_env
-
+import pickle
 
 
 
@@ -17,6 +17,7 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
 
         for step in range(max_steps):
             action = agent.get_action(state, episilon)
+            print("actual action=",action)
             next_state, reward, done = env.perform_one_step(action)
 
             if step == max_steps-1 :
@@ -35,7 +36,11 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
                 break
 
             state = next_state
-        if episode%10==0 and episode>=0:
+        
+        with open("rewards.pickle","wb") as f:
+            pickle.dump(episode_rewards, f)
+
+        if episode%10==0 and episode>=1:
             agent.save()
     return episode_rewards
 

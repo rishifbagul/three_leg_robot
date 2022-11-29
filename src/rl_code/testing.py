@@ -33,6 +33,7 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
                 episode_rewards.append(episode_reward)
                 print("Episode " + str(episode) + ": " + str(episode_reward))
                 break
+            
 
             state = next_state
         if episode%10==0 and episode>1:
@@ -47,7 +48,7 @@ batch_size = 32
 
 gamma = 0.99
 tau = 1e-2
-buffer_maxlen = 10000
+buffer_maxlen = 100000
 critic_lr = 1e-3
 actor_lr = 1e-3
 episilon=0
