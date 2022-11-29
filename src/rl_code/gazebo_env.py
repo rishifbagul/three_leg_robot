@@ -26,7 +26,7 @@ class Gazebo_enviorment:
         self.model_state_req = SetModelStateRequest()
         self.model_state_req.model_state = ModelState()
         self.model_state_req.model_state.model_name = 'three_leg_robot'
-        self.model_state_req.model_state.pose.position.z = 0.8
+        self.model_state_req.model_state.pose.position.z = 0.7
         self.model_state_req.model_state.reference_frame = 'world'
 
         self.joint_publisher=[rospy.Publisher('/robot_6_joint/joint1_position_controller/command',Float64,queue_size=1),\
@@ -66,7 +66,7 @@ class Gazebo_enviorment:
         # self.move_joints(self.starting_pos)
         # time.sleep(1)
         self.move_joints([1,1,1,1,1,1])
-        time.sleep(2)
+        time.sleep(3)
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
             self.pause_engine()
@@ -79,13 +79,14 @@ class Gazebo_enviorment:
         except:
             print('/gazebo/set_model_state call failed')
         
+        
         rospy.wait_for_service('/gazebo/unpause_physics')
         try:
             self.unpause_engine()
         except :
             print("physics couldnt started")
         
-        time.sleep(2)
+        #time.sleep(2)
         
         model_state= self.get_model_state()
         #self.reward_last_x=model_state.pose.position.x
