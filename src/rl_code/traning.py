@@ -23,6 +23,7 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
             if step == max_steps-1 :
                 done=True
             print("reward=",reward)
+            #print("reward=",reward,"state=",state)
             agent.replay_buffer.push(state, action, reward, next_state, done)
             episode_reward += reward
 
@@ -36,6 +37,8 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
                 break
 
             state = next_state
+            
+            print("version running: 29 Nov 19:39")
         
         with open("rewards.pickle","wb") as f:
             pickle.dump(episode_rewards, f)
@@ -46,8 +49,8 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
 
 env = gazebo_env.Gazebo_enviorment()
 
-max_episodes = 50
-max_steps = 50
+max_episodes = 500
+max_steps = 5000
 batch_size = 32
 
 gamma = 0.99
@@ -56,7 +59,7 @@ buffer_maxlen = 10000
 critic_lr = 1e-3
 actor_lr = 1e-3
 episilon=0.5
-state_size=6+4+1        #joints+orientation+direction of reward
+state_size=6+4+1+1+6        #joints+orientation+direction of reward+altitude+velocities
 action_size=6           # number of joints
 agent = DDPGAgent(state_size,action_size, gamma, tau, buffer_maxlen, critic_lr, actor_lr)
 episode_rewards = trainer(env, agent, max_episodes, max_steps, batch_size,episilon)

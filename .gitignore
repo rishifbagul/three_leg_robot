@@ -20,3 +20,4 @@ src/rl_code/NN_model/critic_target/keras_metadata.pb
 src/rl_code/NN_model/critic_target/saved_model.pb
 src/rl_code/NN_model/critic_target/variables/variables.data-00000-of-00001
 src/rl_code/NN_model/critic_target/variables/variables.index
+src/rl_code/rewards.pickle

@@ -36,6 +36,10 @@ class Gazebo_enviorment:
                         rospy.Publisher('/robot_6_joint/joint5_position_controller/command',Float64,queue_size=1),\
                         rospy.Publisher('/robot_6_joint/joint6_position_controller/command',Float64,queue_size=1)]
 
+        
+        self.joint_state_subscriber = rospy.Subscriber('/robot_6_joint/joint_states',JointState,
+                                                       self.joint_state_subscriber_callback)
+
         self.joint_name_list = ['base_leg1_joint','base_leg2_joint','base_leg3_joint','leg1_joint','leg2_joint','leg3_joint']
         
         self.starting_pos = [3.0 , 3.0, 3.0, 1.5, 1.5, 1.5]
@@ -52,8 +56,8 @@ class Gazebo_enviorment:
         
         self.target_x=20
         self.target_y=0
-        self.last_reward_x=0
-        self.last_reward_y=0
+        #self.last_reward_x=0
+        #self.last_reward_y=0
         self.reset_robot()
         
     def reset_robot(self):
@@ -74,40 +78,55 @@ class Gazebo_enviorment:
             self.model_state_proxy(self.model_state_req)
         except:
             print('/gazebo/set_model_state call failed')
-
+        
         rospy.wait_for_service('/gazebo/unpause_physics')
         try:
             self.unpause_engine()
         except :
             print("physics couldnt started")
         
+        time.sleep(2)
+        
         model_state= self.get_model_state()
-        self.reward_last_x=model_state.pose.position.x
-        self.reward_last_y=model_state.pose.position.y
+        #self.reward_last_x=model_state.pose.position.x
+        #self.reward_last_y=model_state.pose.position.y
         return self.get_state(model_state)
         
     def move_joints(self,list_of_joint_angles):
+        try:
+            self.unpause_engine()
+        except :
+            print("physics couldnt started")
+            
         for i in range(len(list_of_joint_angles)):
             self.joint_publisher[i].publish(list_of_joint_angles[i])
         self.next_state_joint_angle=list_of_joint_angles
+        
+        try:
+            self.pause_engine()
+        except:
+            print("gazebo couldnt paused")
     
     def get_state(self,model_state):
         state=self.get_state_joint_angle()
         for i in range(len(state)):
             state[i]=self.remap(state[i],self.joint_min_angle[i],self.joint_max_angle[i],0,1)
-        x,y,z,w,yaw=self.get_state_pose(model_state)
+        x,y,z,w,yaw,Z,lx,ly,lz,ax,ay,az=self.get_state_pose(model_state)
         yaw=self.remap(yaw,-math.pi,math.pi,0,1)
-        pose=np.array([x,y,z,w,yaw])
+        pose=np.array([x,y,z,w,yaw,Z,lx,ly,lz,ax,ay,az])
         return np.concatenate((state,pose))
 
     
+    def joint_state_subscriber_callback(self,joint_state):
+        self.state_joint_angle = np.array(joint_state.position)
+
     def get_state_joint_angle(self):
-        self.state_joint_angle=self.next_state_joint_angle
         return self.state_joint_angle
     
     def get_model_state(self):
         rospy.wait_for_service('/gazebo/get_model_state')
         model_state = self.get_model_state_proxy(self.get_model_state_req)
+        #print("model state",model_state)
         return model_state
     
     def get_state_pose(self,model_state):
@@ -115,8 +134,16 @@ class Gazebo_enviorment:
         y=model_state.pose.orientation.y
         z=model_state.pose.orientation.z
         w=model_state.pose.orientation.w
+        Z=model_state.pose.position.z
+        lx=model_state.twist.linear.x
+        ly=model_state.twist.linear.y
+        lz=model_state.twist.linear.z
+        ax=model_state.twist.angular.x
+        ay=model_state.twist.angular.y
+        az=model_state.twist.angular.z
+        
         ro,pi,yaw=euler_from_quaternion([x,y,z,w])
-        return x,y,z,w,yaw
+        return x,y,z,w,yaw,Z,lx,ly,lz,ax,ay,az
 
 
     def remap(self,value,low_from,high_from,low_to,high_to):
@@ -146,11 +173,7 @@ class Gazebo_enviorment:
             reward=100
         
         if not done:
-            reward=10*(abs((self.target_x-self.reward_last_x)+(self.target_y-self.reward_last_y))-abs((self.target_x-X)+(self.target_y-Y)))
-            if reward <= 0:
-                reward=min(reward,-1)
-            self.reward_last_x=X
-            self.reward_last_y=Y
+            reward=-10*(math.sqrt((self.target_x-X)**2 + (self.target_y-Y)**2))
         
         return reward,done
     
@@ -158,7 +181,7 @@ class Gazebo_enviorment:
         for i in range(len(action)):
             action[i]=self.remap(action[i],-1,1,self.joint_min_angle[i],self.joint_max_angle[i])
         self.move_joints(action)
-        time.sleep(0.5)
+        #time.sleep(0.5)
         model_state=self.get_model_state()
         next_state=self.get_state(model_state)
         raward,done = self.calculate_reward(model_state)
