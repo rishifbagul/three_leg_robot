@@ -55,6 +55,14 @@ class DDPGAgent:
         print("pridicted action=",a)
         a += noise_scale * np.random.randn(self.action_size)
         return np.clip(a, -self.action_max, self.action_max)
+        # print("state:",s)
+        # a=input("tell the action")
+        # a=a.split(",")
+        # print(a)
+        # for i in range(len(a)):
+        #   a[i]=float(a[i])
+        # print('action',a)
+        # return a
 
     def update(self, batch_size):                           #learn about this
         

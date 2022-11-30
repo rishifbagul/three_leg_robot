@@ -21,3 +21,47 @@ src/rl_code/NN_model/critic_target/saved_model.pb
 src/rl_code/NN_model/critic_target/variables/variables.data-00000-of-00001
 src/rl_code/NN_model/critic_target/variables/variables.index
 src/rl_code/rewards.pickle
+src/trained param/30 MORNING/memory.pickle
+src/trained param/30 MORNING/rewards.pickle
+src/trained param/30 MORNING/actor/fingerprint.pb
+src/trained param/30 MORNING/actor/keras_metadata.pb
+src/trained param/30 MORNING/actor/saved_model.pb
+src/trained param/30 MORNING/actor/variables/variables.data-00000-of-00001
+src/trained param/30 MORNING/actor/variables/variables.index
+src/trained param/30 MORNING/actor_target/fingerprint.pb
+src/trained param/30 MORNING/actor_target/keras_metadata.pb
+src/trained param/30 MORNING/actor_target/saved_model.pb
+src/trained param/30 MORNING/actor_target/variables/variables.data-00000-of-00001
+src/trained param/30 MORNING/actor_target/variables/variables.index
+src/trained param/30 MORNING/critic/fingerprint.pb
+src/trained param/30 MORNING/critic/keras_metadata.pb
+src/trained param/30 MORNING/critic/saved_model.pb
+src/trained param/30 MORNING/critic/variables/variables.data-00000-of-00001
+src/trained param/30 MORNING/critic/variables/variables.index
+src/trained param/30 MORNING/critic_target/fingerprint.pb
+src/trained param/30 MORNING/critic_target/keras_metadata.pb
+src/trained param/30 MORNING/critic_target/saved_model.pb
+src/trained param/30 MORNING/critic_target/variables/variables.data-00000-of-00001
+src/trained param/30 MORNING/critic_target/variables/variables.index
+src/trained param/night 29 nov/memory.pickle
+src/trained param/night 29 nov/rewards.pickle
+src/trained param/night 29 nov/NN_model/actor/fingerprint.pb
+src/trained param/night 29 nov/NN_model/actor/keras_metadata.pb
+src/trained param/night 29 nov/NN_model/actor/saved_model.pb
+src/trained param/night 29 nov/NN_model/actor/variables/variables.data-00000-of-00001
+src/trained param/night 29 nov/NN_model/actor/variables/variables.index
+src/trained param/night 29 nov/NN_model/actor_target/fingerprint.pb
+src/trained param/night 29 nov/NN_model/actor_target/keras_metadata.pb
+src/trained param/night 29 nov/NN_model/actor_target/saved_model.pb
+src/trained param/night 29 nov/NN_model/actor_target/variables/variables.data-00000-of-00001
+src/trained param/night 29 nov/NN_model/actor_target/variables/variables.index
+src/trained param/night 29 nov/NN_model/critic/fingerprint.pb
+src/trained param/night 29 nov/NN_model/critic/keras_metadata.pb
+src/trained param/night 29 nov/NN_model/critic/saved_model.pb
+src/trained param/night 29 nov/NN_model/critic/variables/variables.data-00000-of-00001
+src/trained param/night 29 nov/NN_model/critic/variables/variables.index
+src/trained param/night 29 nov/NN_model/critic_target/fingerprint.pb
+src/trained param/night 29 nov/NN_model/critic_target/keras_metadata.pb
+src/trained param/night 29 nov/NN_model/critic_target/saved_model.pb
+src/trained param/night 29 nov/NN_model/critic_target/variables/variables.data-00000-of-00001
+src/trained param/night 29 nov/NN_model/critic_target/variables/variables.index

@@ -26,7 +26,7 @@ class Gazebo_enviorment:
         self.model_state_req = SetModelStateRequest()
         self.model_state_req.model_state = ModelState()
         self.model_state_req.model_state.model_name = 'three_leg_robot'
-        self.model_state_req.model_state.pose.position.z = 0.7
+        self.model_state_req.model_state.pose.position.z = 0.8
         self.model_state_req.model_state.reference_frame = 'world'
 
         self.joint_publisher=[rospy.Publisher('/robot_6_joint/joint1_position_controller/command',Float64,queue_size=1),\
@@ -54,7 +54,7 @@ class Gazebo_enviorment:
         self.joint_max_angle=[math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2]
         self.joint_min_angle=[0,0,0,-math.pi/2,-math.pi/2,-math.pi/2]
         
-        self.target_x=20
+        self.target_x=2
         self.target_y=0
         #self.last_reward_x=0
         #self.last_reward_y=0
@@ -65,7 +65,16 @@ class Gazebo_enviorment:
         print("resting Enviorment")
         # self.move_joints(self.starting_pos)
         # time.sleep(1)
-        self.move_joints([1,1,1,1,1,1])
+        rospy.wait_for_service('/gazebo/unpause_physics')
+        try:
+            self.unpause_engine()
+        except :
+            print("physics couldnt started")
+
+        list_of_joint_angles=[0.7,1,1,1,1,1]
+        for i in range(len(list_of_joint_angles)):
+            self.joint_publisher[i].publish(list_of_joint_angles[i])
+        self.next_state_joint_angle=list_of_joint_angles
         time.sleep(3)
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
@@ -86,7 +95,7 @@ class Gazebo_enviorment:
         except :
             print("physics couldnt started")
         
-        #time.sleep(2)
+        time.sleep(2)
         
         model_state= self.get_model_state()
         #self.reward_last_x=model_state.pose.position.x
@@ -103,6 +112,7 @@ class Gazebo_enviorment:
             self.joint_publisher[i].publish(list_of_joint_angles[i])
         self.next_state_joint_angle=list_of_joint_angles
         
+        time.sleep(0.1)
         try:
             self.pause_engine()
         except:
@@ -161,11 +171,12 @@ class Gazebo_enviorment:
         w=model_state.pose.orientation.w
         X=model_state.pose.position.x
         Y=model_state.pose.position.y
+        Z=model_state.pose.position.z
 
         roll,pitch,yaw=euler_from_quaternion([x,y,z,w])
-        if roll > 2 or roll < -2 or pitch > 2 or pitch < -2:
+        if roll > 2 or roll < -2 or pitch > 2 or pitch < -2 or Z < 0.1:
             done=True
-            reward=-2000
+            reward=-20000
         else:
             done=False
         
@@ -174,7 +185,7 @@ class Gazebo_enviorment:
             reward=100
         
         if not done:
-            reward=-10*(math.sqrt((self.target_x-X)**2 + (self.target_y-Y)**2))
+            reward=-100*(math.sqrt((self.target_x-X)**2 + (self.target_y-Y)**2))
         
         return reward,done
     
@@ -182,7 +193,7 @@ class Gazebo_enviorment:
         for i in range(len(action)):
             action[i]=self.remap(action[i],-1,1,self.joint_min_angle[i],self.joint_max_angle[i])
         self.move_joints(action)
-        #time.sleep(0.5)
+        # time.sleep(0.1)
         model_state=self.get_model_state()
         next_state=self.get_state(model_state)
         raward,done = self.calculate_reward(model_state)

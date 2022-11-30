@@ -28,6 +28,8 @@
 
 <gazebo reference="leg1_1">
     <material>Gazebo/Orange</material>
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
 </gazebo>
 
 <joint name="leg1_joint" type="revolute">
@@ -62,8 +64,59 @@
 
 <gazebo reference="leg1_2">
     <material>Gazebo/Yellow</material>
+    <surface>
+        <friction>
+        <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+        </ode>
+        <torsional>
+            <coefficient>1000000</coefficient>
+        </torsional>
+        </friction>
+    </surface>
 </gazebo>
 
+<joint name="leg1_tip_joint" type="fixed">
+    <parent link="leg1_2"/>
+    <child link="leg1_tip"/>
+    <origin xyz="0.5 0 0"/>
+</joint>
+
+<link name="leg1_tip">
+    <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+            <sphere radius="0.05"/>
+        </geometry> 
+        <material name="black"/>
+    </visual>
+
+    <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+            <sphere radius="0.05"/>
+        </geometry> 
+    </collision>
+    <xacro:inertial_sphere mass="0.1" radius="0.05">
+       <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_sphere>
+</link>
+
+<gazebo reference="leg1_tip">
+    <material>Gazebo/Black</material>
+    <surface>
+        <friction>
+        <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+        </ode>
+        <torsional>
+            <coefficient>1000000</coefficient>
+        </torsional>
+        </friction>
+    </surface>
+</gazebo>
 <!-- leg 2-->  
 <link name="leg2_1">
     <visual>
@@ -87,6 +140,8 @@
 
 <gazebo reference="leg2_1">
     <material>Gazebo/Orange</material>
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
 </gazebo>
 
 <joint name="leg2_joint" type="revolute">
@@ -120,6 +175,58 @@
 
 <gazebo reference="leg2_2">
     <material>Gazebo/Yellow</material>
+    <surface>
+        <friction>
+        <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+        </ode>
+        <torsional>
+            <coefficient>1000000</coefficient>
+        </torsional>
+        </friction>
+    </surface>
+</gazebo>
+
+<joint name="leg2_tip_joint" type="fixed">
+    <parent link="leg2_2"/>
+    <child link="leg2_tip"/>
+    <origin xyz="0.5 0 0"/>
+</joint>
+
+<link name="leg2_tip">
+    <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+            <sphere radius="0.05"/>
+        </geometry> 
+        <material name="black"/>
+    </visual>
+
+    <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+            <sphere radius="0.05"/>
+        </geometry> 
+    </collision>
+    <xacro:inertial_sphere mass="0.1" radius="0.05">
+       <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_sphere>
+</link>
+
+<gazebo reference="leg2_tip">
+    <material>Gazebo/Black</material>
+    <surface>
+        <friction>
+        <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+        </ode>
+        <torsional>
+            <coefficient>1000000</coefficient>
+        </torsional>
+        </friction>
+    </surface>
 </gazebo>
 
 <!-- leg 3-->  
@@ -144,6 +251,8 @@
 
 <gazebo reference="leg3_1">
     <material>Gazebo/Orange</material>
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
 </gazebo>
 
 <joint name="leg3_joint" type="revolute">
@@ -177,9 +286,60 @@
 
 <gazebo reference="leg3_2">
     <material>Gazebo/Yellow</material>
+    <surface>
+        <friction>
+        <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+        </ode>
+        <torsional>
+            <coefficient>1000000</coefficient>
+        </torsional>
+        </friction>
+    </surface>
 </gazebo>
 
 
+<joint name="leg3_tip_joint" type="fixed">
+    <parent link="leg3_2"/>
+    <child link="leg3_tip"/>
+    <origin xyz="0.5 0 0"/>
+</joint>
+
+<link name="leg3_tip">
+    <visual>
+        <origin xyz="0 0 0"/>
+        <geometry>
+            <sphere radius="0.05"/>
+        </geometry> 
+        <material name="black"/>
+    </visual>
+
+    <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+            <sphere radius="0.05"/>
+        </geometry> 
+    </collision>
+    <xacro:inertial_sphere mass="0.1" radius="0.05">
+       <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_sphere>
+</link>
+
+<gazebo reference="leg3_tip">
+    <material>Gazebo/Black</material>
+    <surface>
+        <friction>
+        <ode>
+            <mu>100000.0</mu>
+            <mu2>100000.0</mu2>
+        </ode>
+        <torsional>
+            <coefficient>1000000</coefficient>
+        </torsional>
+        </friction>
+    </surface>
+</gazebo>
 
     
 </robot>
