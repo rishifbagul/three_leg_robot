@@ -12,6 +12,7 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
     episode_rewards = []
 
     for episode in range(max_episodes):
+        
         state = env.reset_robot()
         episode_reward = 0
 
@@ -43,13 +44,15 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
         with open("rewards.pickle","wb") as f:
             pickle.dump(episode_rewards, f)
 
-        if episode%10==0 and episode>=1:
+        if episode%50==0 and episode>=1:
             agent.save()
+            #episilon=episilon-0.025
+            episilon=max(0,episilon)
     return episode_rewards
 
 env = gazebo_env.Gazebo_enviorment()
 
-max_episodes = 500
+max_episodes = 50000
 max_steps = 5000
 batch_size = 32
 
