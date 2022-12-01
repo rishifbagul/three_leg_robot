@@ -65,3 +65,24 @@ src/trained param/night 29 nov/NN_model/critic_target/keras_metadata.pb
 src/trained param/night 29 nov/NN_model/critic_target/saved_model.pb
 src/trained param/night 29 nov/NN_model/critic_target/variables/variables.data-00000-of-00001
 src/trained param/night 29 nov/NN_model/critic_target/variables/variables.index
+src/trained param/good model/rewards.pickle
+src/trained param/good model/actor/fingerprint.pb
+src/trained param/good model/actor/keras_metadata.pb
+src/trained param/good model/actor/saved_model.pb
+src/trained param/good model/actor/variables/variables.data-00000-of-00001
+src/trained param/good model/actor/variables/variables.index
+src/trained param/good model/actor_target/fingerprint.pb
+src/trained param/good model/actor_target/keras_metadata.pb
+src/trained param/good model/actor_target/saved_model.pb
+src/trained param/good model/actor_target/variables/variables.data-00000-of-00001
+src/trained param/good model/actor_target/variables/variables.index
+src/trained param/good model/critic/fingerprint.pb
+src/trained param/good model/critic/keras_metadata.pb
+src/trained param/good model/critic/saved_model.pb
+src/trained param/good model/critic/variables/variables.data-00000-of-00001
+src/trained param/good model/critic/variables/variables.index
+src/trained param/good model/critic_target/fingerprint.pb
+src/trained param/good model/critic_target/keras_metadata.pb
+src/trained param/good model/critic_target/saved_model.pb
+src/trained param/good model/critic_target/variables/variables.data-00000-of-00001
+src/trained param/good model/critic_target/variables/variables.index

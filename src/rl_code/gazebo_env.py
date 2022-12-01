@@ -51,8 +51,11 @@ class Gazebo_enviorment:
         self.state_joint_angle=self.starting_pos
         self.next_state_joint_angle=self.starting_pos
 
-        self.joint_max_angle=[math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2]
-        self.joint_min_angle=[0,0,0,-math.pi/2,-math.pi/2,-math.pi/2]
+        # self.joint_max_angle=[math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2]
+        # self.joint_min_angle=[0,0,0,-math.pi/2,-math.pi/2,-math.pi/2]
+
+        self.joint_max_angle=[2,2,2,1,1,1]
+        self.joint_min_angle=[1,1,1,0,0,0]
         
         self.target_x=2
         self.target_y=0
@@ -71,7 +74,7 @@ class Gazebo_enviorment:
         except :
             print("physics couldnt started")
 
-        list_of_joint_angles=[0.7,1,1,1,1,1]
+        list_of_joint_angles=[0.7,1.5,1.5,1,1,1]
         for i in range(len(list_of_joint_angles)):
             self.joint_publisher[i].publish(list_of_joint_angles[i])
         self.next_state_joint_angle=list_of_joint_angles
@@ -103,15 +106,15 @@ class Gazebo_enviorment:
         return self.get_state(model_state)
         
     def move_joints(self,list_of_joint_angles):
-        try:
-            self.unpause_engine()
-        except :
-            print("physics couldnt started")
+        
             
         for i in range(len(list_of_joint_angles)):
             self.joint_publisher[i].publish(list_of_joint_angles[i])
         self.next_state_joint_angle=list_of_joint_angles
-        
+        try:
+            self.unpause_engine()
+        except :
+            print("physics couldnt started")
         time.sleep(0.1)
         try:
             self.pause_engine()
@@ -124,7 +127,8 @@ class Gazebo_enviorment:
             state[i]=self.remap(state[i],self.joint_min_angle[i],self.joint_max_angle[i],0,1)
         x,y,z,w,yaw,Z,lx,ly,lz,ax,ay,az=self.get_state_pose(model_state)
         yaw=self.remap(yaw,-math.pi,math.pi,0,1)
-        pose=np.array([x,y,z,w,yaw,Z,lx,ly,lz,ax,ay,az])
+        #pose=np.array([x,y,z,w,yaw,Z,lx,ly,lz,ax,ay,az])
+        pose=np.array([x,y,z,w,yaw,Z])
         return np.concatenate((state,pose))
 
     
@@ -174,13 +178,13 @@ class Gazebo_enviorment:
         Z=model_state.pose.position.z
 
         roll,pitch,yaw=euler_from_quaternion([x,y,z,w])
-        if roll > 2 or roll < -2 or pitch > 2 or pitch < -2 or Z < 0.1:
+        if roll > 2 or roll < -2 or pitch > 2 or pitch < -2 or Z < 0.252:
             done=True
             reward=-20000
         else:
             done=False
         
-        if X > self.target_x and ( Y>self.target_y-0.2 and Y<self.target_y+0.2):
+        if X > self.target_x and ( Y>self.target_y-1 and Y<self.target_y+1):
             done=True
             reward=100
         

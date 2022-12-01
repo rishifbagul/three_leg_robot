@@ -3,10 +3,40 @@ from agent import DDPGAgent
 import numpy as np
 import gazebo_env
 import pickle
+import math
 
-
-
-
+def remap(value,low_from,high_from,low_to,high_to):
+    if value>high_from:
+        value=high_from
+    elif value<low_from:
+        value=low_from
+    return (value-low_from)*((high_to-low_to)/(high_from-low_from))+low_to
+count=0
+def get_input_action(state):
+    global count
+    if count%2==0:
+        # if state[10] <0.5:
+        #     a=[0.7,1.2,1.4,1,1,1]
+        # else :
+        #     a=[0.7,1.3,1.2,1,1,1]
+        a=[0.7,1.2,1.2,1,1,1]
+    else:
+        a=[0.7,1,1,1,1,1]
+    count+=1
+    joint_max_angle=[2,2,2,1,1,1]
+    joint_min_angle=[1,1,1,0,0,0]
+    # for i in range(6):
+    #     state[i]=remap(state[i],0,1,joint_min_angle[i],joint_max_angle[i])
+    #     print("joint"+str(i+1)+"=",state[i])
+    # a=input("tell the action")
+    # a=a.split(",")
+    # print(a)
+    for i in range(len(a)):
+      a[i]=float(a[i])
+    print('action',a)
+    for i in range(len(a)):
+        a[i]=remap(a[i],joint_min_angle[i],joint_max_angle[i],-1,1)
+    return a
 
 def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
     episode_rewards = []
@@ -18,6 +48,7 @@ def trainer(env, agent, max_episodes, max_steps, batch_size, episilon):
 
         for step in range(max_steps):
             action = agent.get_action(state, episilon)
+            #action= get_input_action(state)
             print("actual action=",action)
             next_state, reward, done = env.perform_one_step(action)
 
@@ -62,7 +93,11 @@ buffer_maxlen = 10000
 critic_lr = 1e-3
 actor_lr = 1e-3
 episilon=0.5
-state_size=6+4+1+1+6        #joints+orientation+direction of reward+altitude+velocities
+state_size=6+4+1+1   #+6        #joints+orientation+direction of reward+altitude+velocities
 action_size=6           # number of joints
 agent = DDPGAgent(state_size,action_size, gamma, tau, buffer_maxlen, critic_lr, actor_lr)
 episode_rewards = trainer(env, agent, max_episodes, max_steps, batch_size,episilon)
+# for i in range(500):
+#     print(i)
+#     agent.update(50) 
+# agent.save()
