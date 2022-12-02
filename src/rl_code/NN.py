@@ -37,3 +37,4 @@ def visualise_NN(model,file_name):
     layer_range=None,
     show_layer_activations=True
 )
+
