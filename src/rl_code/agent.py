@@ -71,7 +71,6 @@ class DDPGAgent:
         Xten=tf.convert_to_tensor(X)
         
 
-        # Updating Ze Critic
         with tf.GradientTape() as tape:
           A2 =  self.actor_target(X2)
           q_target = R + self.gamma  * self.critic_target([X2,A2])
@@ -82,7 +81,7 @@ class DDPGAgent:
         self.critic_losses.append(q_loss)
 
 
-        #Updating ZE Actor
+ 
         with tf.GradientTape() as tape2:
           A_mu =  self.actor(X)
           Q_mu = self.critic([X,A_mu])
@@ -93,9 +92,6 @@ class DDPGAgent:
 
 
 
-        # update target networks
-              ## Updating both netwokrs
-        # # updating q_mu network
         
         temp1 = np.array(self.critic_target.get_weights(),dtype=object)
         temp2 = np.array(self.critic.get_weights(),dtype=object)
@@ -103,7 +99,6 @@ class DDPGAgent:
         self.critic_target.set_weights(temp3)
       
 
-      # updating mu network
         temp1 = np.array(self.actor_target.get_weights())
         temp2 = np.array(self.actor.get_weights())
         temp3 = self.tau*temp2 + (1-self.tau)*temp1
@@ -122,4 +117,4 @@ class DDPGAgent:
       self.actor_target=keras.models.load_model("NN_model/actor_target")
       self.critic_target=keras.models.load_model("NN_model/critic_target")
       print("NN model loaded")
-       
+

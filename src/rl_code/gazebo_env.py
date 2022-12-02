@@ -51,11 +51,11 @@ class Gazebo_enviorment:
         self.state_joint_angle=self.starting_pos
         self.next_state_joint_angle=self.starting_pos
 
-        # self.joint_max_angle=[math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2]
-        # self.joint_min_angle=[0,0,0,-math.pi/2,-math.pi/2,-math.pi/2]
+        self.joint_max_angle=[math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2]
+        self.joint_min_angle=[0,0,0,-math.pi/2,-math.pi/2,-math.pi/2]
 
-        self.joint_max_angle=[2,2,2,1,1,1]
-        self.joint_min_angle=[1,1,1,0,0,0]
+        # self.joint_max_angle=[2,2,2,1,1,1]
+        # self.joint_min_angle=[1,1,1,0,0,0]
         
         self.target_x=2
         self.target_y=0
@@ -211,28 +211,4 @@ class Gazebo_enviorment:
 
 
 
-# env = Gazebo_enviorment()
-# env.reset_robot()
 
-# for i in range(10):
-#     time.sleep(2)
-#     action=np.array([0.0,0.0,0.0,0.0,0.0,0.0])
-#     print(env.perform_one_step(action))
-
-# pos = np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
-# env.move_joints(pos)
-
-# time.sleep(2)
-
-# pos = np.array([math.pi,math.pi,math.pi,math.pi/2,math.pi/2,math.pi/2])
-# env.move_joints(pos)
-
-# time.sleep(2)
-
-# pos = np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
-# env.move_joints(pos)
-
-# time.sleep(2)
-
-# pos = np.array([0,0,0,-math.pi/2,-math.pi/2,-math.pi/2])
-# env.move_joints(pos)
